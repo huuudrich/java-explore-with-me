@@ -10,7 +10,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
+    <groupId>com.yandex.huuudrich</groupId>
     <artifactId>http-client</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>http-client</name>
+    <description>http-client</description>
 
     <dependencies>
         <dependency>
@@ -34,5 +38,20 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
