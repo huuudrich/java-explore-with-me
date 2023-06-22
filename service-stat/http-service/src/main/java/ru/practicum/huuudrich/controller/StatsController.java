@@ -38,4 +38,9 @@ public class StatsController {
         LocalDateTime endTime = LocalDateTime.parse(decodedEnd, formatter);
         return new ResponseEntity<>(statsService.getStatistic(startTime, endTime, uris, unique), HttpStatus.OK);
     }
+
+    @GetMapping("/check")
+    public Boolean checkIp(@RequestParam(value = "ip") String ip) {
+        return statsService.checkUri(ip);
+    }
 }
