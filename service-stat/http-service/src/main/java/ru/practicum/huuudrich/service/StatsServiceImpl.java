@@ -43,11 +43,6 @@ public class StatsServiceImpl implements StatsService {
         }
     }
 
-    @Override
-    public Boolean checkUri(String ip) {
-        return statsRepository.existsByIp(ip);
-    }
-
     private List<ShortStat> sortHitsAsc(List<ShortStat> content) {
         return content.stream()
                 .sorted(Comparator.comparing(ShortStat::getHits).reversed())

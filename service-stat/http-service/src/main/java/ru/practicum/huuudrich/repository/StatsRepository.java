@@ -30,6 +30,4 @@ public interface StatsRepository extends JpaRepository<ServiceRequest, Long> {
             "FROM ServiceRequest sr WHERE sr.timestamp BETWEEN :start " +
             "AND :end GROUP BY sr.app, sr.uri")
     List<ShortStat> getUniqueUriHitCountNotUris(LocalDateTime start, LocalDateTime end);
-
-    Boolean existsByIp(String ip);
 }

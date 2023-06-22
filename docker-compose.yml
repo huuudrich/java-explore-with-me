@@ -1,5 +1,14 @@
 version: '3.8'
 services:
+  stat-client:
+    build: ./service-stat/http-client
+    image: stat-client
+    container_name: stat-client
+    ports:
+      - "9091:9091"
+    depends_on:
+      - db
+
   stat-service:
     build: ./service-stat/http-service
     image: stat-service
@@ -7,34 +16,14 @@ services:
     ports:
       - "9090:9090"
     depends_on:
-      - db-stat
+      - db
 
-  service-main:
-    build: ./service-main
-    image: service-main
-    container_name: service-main
-    ports:
-      - "8080:8080"
-    depends_on:
-      - stat-service
-      - db-main
-
-  db-stat:
+  db:
     image: postgres
-    container_name: db-stat
+    container_name: db
     ports:
       - "6541:5432"
     environment:
       - POSTGRES_DB=stat
       - POSTGRES_USER=stat
       - POSTGRES_PASSWORD=stat
-
-  db-main:
-    image: postgres
-    container_name: db-main
-    ports:
-      - "6542:5433"
-    environment:
-      - POSTGRES_DB=main
-      - POSTGRES_USER=main
-      - POSTGRES_PASSWORD=main
