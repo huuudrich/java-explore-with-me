@@ -12,8 +12,6 @@
     <artifactId>service-stat</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>http-client</module>
         <module>http-service</module>
-        <module>shared-dto</module>
     </modules>
 </project>
