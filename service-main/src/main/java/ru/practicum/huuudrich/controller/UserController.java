@@ -28,11 +28,13 @@ import java.util.List;
 @RequestMapping("/users")
 @Validated
 public class UserController {
-    private static final String EVENTS_PATH = "/events";
+    private static final String USERS_EVENTS_PATH = "{userId}/events";
     private static final String REQUEST_PATH = "/requests";
+    private static final String USER_REQUEST_PATH = "{userId}/requests";
+    private static final String USERS_EVENTS_EVENT_ID_PATH = "{userId}/events/{eventId}";
     private final UserService userService;
 
-    @GetMapping("{userId}" + EVENTS_PATH)
+    @GetMapping(USERS_EVENTS_PATH)
     public ResponseEntity<List<EventShortDto>> getEventsByCurrentUser(@PathVariable @Positive Long userId, @PositiveOrZero @RequestParam(name = "from", defaultValue = "0", required = false) Integer from,
                                                                       @PositiveOrZero @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
         Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "views"));
@@ -40,19 +42,19 @@ public class UserController {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @PostMapping("{userId}" + EVENTS_PATH)
+    @PostMapping(USERS_EVENTS_PATH)
     public ResponseEntity<EventFullDto> createEvent(@PathVariable @Positive Long userId, @Valid @RequestBody NewEventDto newEventDto) {
         EventFullDto createdEvent = userService.createEvent(userId, newEventDto);
         return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
     }
 
-    @GetMapping("{userId}" + EVENTS_PATH + "/{eventId}")
+    @GetMapping(USERS_EVENTS_EVENT_ID_PATH)
     public ResponseEntity<EventFullDto> getEventByUserAndEvent(@PathVariable @Positive Long userId, @PathVariable @Positive Long eventId) {
         EventFullDto eventFullDto = userService.getEventsByUserAndEvent(userId, eventId);
         return new ResponseEntity<>(eventFullDto, HttpStatus.OK);
     }
 
-    @PatchMapping("{userId}" + EVENTS_PATH + "/{eventId}")
+    @PatchMapping(USERS_EVENTS_EVENT_ID_PATH)
     public ResponseEntity<EventFullDto> updateEventByUser(@PathVariable @Positive Long userId, @PathVariable @Positive Long eventId,
                                                           @Valid @RequestBody UpdateEventUserRequest updateEventUserRequest) throws EventStateException {
         EventFullDto eventFullDto = userService.updateEventByUser(userId, eventId, updateEventUserRequest);
@@ -60,34 +62,34 @@ public class UserController {
     }
 
     //requests
-    @GetMapping("{userId}" + REQUEST_PATH)
+    @GetMapping(USER_REQUEST_PATH)
     public ResponseEntity<List<ParticipationRequestDto>> getRequestsByUser(@PathVariable @Positive Long userId) {
         List<ParticipationRequestDto> requests = userService.getRequestsByUser(userId);
         return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 
-    @PostMapping("{userId}" + REQUEST_PATH)
+    @PostMapping(USER_REQUEST_PATH)
     public ResponseEntity<ParticipationRequestDto> createRequest(@PathVariable @Positive Long userId,
                                                                  @RequestParam("eventId") @Positive Long eventId) {
         ParticipationRequestDto requestDto = userService.createRequest(userId, eventId);
         return new ResponseEntity<>(requestDto, HttpStatus.CREATED);
     }
 
-    @PatchMapping("{userId}" + REQUEST_PATH + "/{requestId}/cancel")
+    @PatchMapping(USER_REQUEST_PATH + "/{requestId}/cancel")
     public ResponseEntity<Void> deleteRequest(@PathVariable @Positive Long userId,
                                               @PathVariable @Positive Long requestId) {
         userService.deleteRequest(userId, requestId);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("{userId}" + EVENTS_PATH + "/{eventId}" + REQUEST_PATH)
+    @GetMapping(USERS_EVENTS_EVENT_ID_PATH + REQUEST_PATH)
     public ResponseEntity<List<ParticipationRequestDto>> getRequestsByInitiator(@PathVariable @Positive Long userId,
                                                                                 @PathVariable @Positive Long eventId) {
         List<ParticipationRequestDto> requestDtoList = userService.getRequestsByInitiator(userId, eventId);
         return new ResponseEntity<>(requestDtoList, HttpStatus.OK);
     }
 
-    @PatchMapping("{userId}" + EVENTS_PATH + "/{eventId}" + REQUEST_PATH)
+    @PatchMapping(USERS_EVENTS_EVENT_ID_PATH + REQUEST_PATH)
     public ResponseEntity<EventRequestStatusUpdateResult> updateStatusRequest(@PathVariable @Positive Long userId,
                                                                               @PathVariable @Positive Long eventId,
                                                                               @RequestBody @Valid EventRequestStatusUpdateRequest request) {

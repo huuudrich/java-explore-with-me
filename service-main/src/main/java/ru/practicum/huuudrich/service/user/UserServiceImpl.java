@@ -142,7 +142,6 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-    //requests
     @Override
     public List<ParticipationRequestDto> getRequestsByUser(Long userId) {
         User requester = getUser(userId);
