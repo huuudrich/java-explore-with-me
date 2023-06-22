@@ -1,6 +1,6 @@
 package ru.practicum.huuudrich.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,9 +18,12 @@ public class ServiceRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    @JsonProperty("app")
     String app;
+    @JsonProperty("uri")
     String uri;
+    @JsonProperty("ip")
     String ip;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonProperty("timestamp")
     LocalDateTime timestamp;
 }
