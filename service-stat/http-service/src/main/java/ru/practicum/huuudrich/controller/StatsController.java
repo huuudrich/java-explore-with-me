@@ -30,4 +30,9 @@ public class StatsController {
                                                         @RequestParam(value = "unique", defaultValue = "false", required = false) Boolean unique) {
         return new ResponseEntity<>(statsService.getStatistic(start, end, uris, unique), HttpStatus.OK);
     }
+
+    @GetMapping("/check")
+    public Boolean checkIp(@RequestParam(value = "ip") String ip) {
+        return statsService.checkUri(ip);
+    }
 }
