@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final RequestRepository requestRepository;
+
     @Transactional
     @Override
     public List<EventShortDto> getEventsByCurrentUser(Long userId, Pageable pageable) {

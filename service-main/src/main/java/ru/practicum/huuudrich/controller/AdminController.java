@@ -30,10 +30,10 @@ import java.util.List;
 @RequestMapping("/admin")
 @Validated
 public class AdminController {
-    private final static String USER_PATH = "/users";
-    private final static String CATEGORY_PATH = "/categories";
-    private final static String EVENT_PATH = "/events";
-    private final static String COMPILATION_PATH = "/compilations";
+    private static final String USER_PATH = "/users";
+    private static final String CATEGORY_PATH = "/categories";
+    private static final String EVENT_PATH = "/events";
+    private static final String COMPILATION_PATH = "/compilations";
     private final AdminService adminService;
 
     @GetMapping(USER_PATH)

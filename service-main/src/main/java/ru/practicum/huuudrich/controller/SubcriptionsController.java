@@ -45,9 +45,4 @@ public class SubcriptionsController {
         List<EventShortDto> eventShortDtoList = subscriptionsService.getSubscribedAuthorEvents(userId, initiatorId);
         return new ResponseEntity<>(eventShortDtoList, HttpStatus.OK);
     }
-    /*@GetMapping("{userId}/events/{initiatorId}")
-    public ResponseEntity<List<EventShortDto>> getSubscribedUsersEvents(@PathVariable @Positive Long userId) {
-        List<EventShortDto> eventShortDtoList = subscriptionsService.getSubscribedUsersEvents(userId);
-        return new ResponseEntity<>(eventShortDtoList, HttpStatus.OK);
-    }*/
 }

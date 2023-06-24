@@ -8,7 +8,6 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.huuudrich.model.event.Event;
-import ru.practicum.huuudrich.model.event.EventShortDto;
 import ru.practicum.huuudrich.model.event.EventState;
 import ru.practicum.huuudrich.model.user.User;
 

@@ -24,9 +24,9 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping
 public class PublicApiController {
-    private final static String CATEGORY_PATH = "/categories";
-    private final static String EVENT_PATH = "/events";
-    private final static String COMPILATION_PATH = "/compilations";
+    private static final String CATEGORY_PATH = "/categories";
+    private static final String EVENT_PATH = "/events";
+    private static final String COMPILATION_PATH = "/compilations";
     private final PublicApiService publicService;
 
     @GetMapping(COMPILATION_PATH)

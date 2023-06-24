@@ -21,10 +21,10 @@ public class CustomExceptionHandler {
         log.warn("Validation error: " + e.getMessage());
         ApiError apiError = new ApiError();
         e.getBindingResult().getFieldErrors().forEach(fieldError ->
-                apiError.setMessage(String.format("Field: %s. Error: %s. Value: %s"
-                        , fieldError.getField()
-                        , fieldError.getDefaultMessage()
-                        , fieldError.getRejectedValue())));
+                apiError.setMessage(String.format("Field: %s. Error: %s. Value: %s",
+                        fieldError.getField(),
+                        fieldError.getDefaultMessage(),
+                        fieldError.getRejectedValue())));
         apiError.setReason("For the requested operation the conditions are not met.");
         apiError.setStatus(HttpStatus.FORBIDDEN.toString());
         apiError.setTimestamp(LocalDateTime.now());
