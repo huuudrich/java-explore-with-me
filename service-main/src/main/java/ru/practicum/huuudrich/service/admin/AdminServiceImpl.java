@@ -78,7 +78,7 @@ public class AdminServiceImpl implements AdminService {
         categoryRepository.save(category);
         return CategoryMapper.INSTANCE.toDto(category);
     }
-    @Transactional
+
     @Override
     public void deleteCategory(Long categoryId) {
         categoryRepository.deleteById(categoryId);
@@ -168,7 +168,7 @@ public class AdminServiceImpl implements AdminService {
         compilationDto.setEvents(EventMapper.INSTANCE.toShortDtoList(events));
         return compilationDto;
     }
-    @Transactional
+
     @Override
     public void deleteCompilation(Long compId) {
         log.info(String.format("Delete compilation with id: %s", compId));

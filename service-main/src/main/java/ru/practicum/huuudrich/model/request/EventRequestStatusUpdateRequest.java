@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -15,8 +16,8 @@ import java.util.List;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventRequestStatusUpdateRequest {
-    @NotNull
-    List<Long> requestIds;
+    @Builder.Default
+    List<Long> requestIds = new ArrayList<>();
     @Enumerated(EnumType.STRING)
     RequestStatus status;
 }

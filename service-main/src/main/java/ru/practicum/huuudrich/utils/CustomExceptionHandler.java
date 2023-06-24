@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.practicum.huuudrich.model.error.ApiError;
 import ru.practicum.huuudrich.utils.exception.BadRequestException;
-import ru.practicum.huuudrich.utils.exception.EventStateException;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -56,17 +55,6 @@ public class CustomExceptionHandler {
         apiError.setReason("The required object was not found.");
         apiError.setStatus(HttpStatus.NOT_FOUND.toString());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
-    }
-
-    @ExceptionHandler(EventStateException.class)
-    public ResponseEntity<ApiError> handleEventStateException(EntityNotFoundException e) {
-        log.warn("EventStateException: " + e.getMessage());
-        ApiError apiError = new ApiError();
-        apiError.setMessage(e.getMessage());
-        apiError.setTimestamp(LocalDateTime.now());
-        apiError.setReason("For the requested operation the conditions are not met.");
-        apiError.setStatus(HttpStatus.FORBIDDEN.toString());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
     }
 
     @ExceptionHandler(BadRequestException.class)

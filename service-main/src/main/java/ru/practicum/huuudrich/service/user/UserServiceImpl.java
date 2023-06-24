@@ -16,7 +16,6 @@ import ru.practicum.huuudrich.repository.EventRepository;
 import ru.practicum.huuudrich.repository.RequestRepository;
 import ru.practicum.huuudrich.repository.UserRepository;
 import ru.practicum.huuudrich.utils.CopyNonNullProperties;
-import ru.practicum.huuudrich.utils.exception.EventStateException;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -33,7 +32,7 @@ public class UserServiceImpl implements UserService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final RequestRepository requestRepository;
-
+    @Transactional
     @Override
     public List<EventShortDto> getEventsByCurrentUser(Long userId, Pageable pageable) {
         User user = getUser(userId);
@@ -64,12 +63,12 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) throws EventStateException {
+    public EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
         Event eventDb = getEvent(userId, eventId);
         Event event = EventMapper.INSTANCE.updateEventToEventRequest(updateEventUserRequest);
 
         if (eventDb.getState() == EventState.PUBLISHED) {
-            throw new EventStateException("Event state must be 'PENDING' or 'CANCELED'");
+            throw new DataIntegrityViolationException("Event state must be 'PENDING' or 'CANCELED'");
         }
 
         CopyNonNullProperties.copy(event, eventDb);
@@ -106,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
         if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
             throw new DataIntegrityViolationException("The requests always confirmed");
-        } else if (event.getConfirmedRequests() > event.getParticipantLimit()) {
+        } else if (event.getConfirmedRequests() != 0 && event.getConfirmedRequests() >= event.getParticipantLimit()) {
             throw new DataIntegrityViolationException("The request limit has been reached");
         }
 
@@ -142,6 +141,7 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
+    //requests
     @Override
     public List<ParticipationRequestDto> getRequestsByUser(Long userId) {
         User requester = getUser(userId);
@@ -157,14 +157,23 @@ public class UserServiceImpl implements UserService {
 
         Long initiatorId = event.getInitiator().getId();
         Optional<Request> existingRequest = requestRepository.findByRequesterAndEvent(requester, event);
+
+        event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+
         if (existingRequest.isPresent()) {
             throw new DataIntegrityViolationException("The request already exists");
         } else if (Objects.equals(initiatorId, userId)) {
-            throw new EntityNotFoundException("The initiator cannot send a request");
+            throw new DataIntegrityViolationException("The initiator cannot send a request");
         } else if (event.getState() != EventState.PUBLISHED) {
             throw new DataIntegrityViolationException("Event not published");
-        } else if (event.getConfirmedRequests() > event.getParticipantLimit()) {
-            throw new DataIntegrityViolationException("The request limit has been reached");
+        }
+
+        Long limit = event.getParticipantLimit();
+
+        if (limit != 0) {
+            if (event.getConfirmedRequests() > limit) {
+                throw new DataIntegrityViolationException("The request limit has been reached");
+            }
         }
 
         Request request = new Request();
@@ -175,9 +184,9 @@ public class UserServiceImpl implements UserService {
             request.setStatus(RequestStatus.CONFIRMED);
         }
 
-        request = requestRepository.save(request);
         eventRepository.incrementConfirmedRequests(eventId);
 
+        request = requestRepository.save(request);
 
         return getRequestDto(request.getId());
     }

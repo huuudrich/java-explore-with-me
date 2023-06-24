@@ -8,6 +8,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.huuudrich.model.event.Event;
+import ru.practicum.huuudrich.model.event.EventShortDto;
 import ru.practicum.huuudrich.model.event.EventState;
 import ru.practicum.huuudrich.model.user.User;
 
@@ -44,5 +45,7 @@ public interface EventRepository extends JpaRepository<Event, Long>, QuerydslPre
 
     Optional<Event> findByIdAndStateIsContaining(Long id, EventState eventState);
 
+    List<Event> findByInitiator(User initiator);
 
+    List<Event> findByInitiatorIn(List<User> initiators);
 }

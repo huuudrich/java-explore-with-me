@@ -8,7 +8,9 @@ import ru.practicum.huuudrich.model.ShortStat;
 import ru.practicum.huuudrich.repository.StatsRepository;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -19,16 +21,25 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public ServiceRequest createRequest(ServiceRequest serviceRequest) {
-        log.info("Save hit with IP:" + serviceRequest);
-        serviceRequest.setTimestamp(LocalDateTime.now());
+        log.info("Save hit with IP:" + serviceRequest.getIp());
         return statsRepository.save(serviceRequest);
     }
 
     @Override
     public List<ShortStat> getStatistic(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         log.info("Getting statistic");
-        if (unique) {
-            return statsRepository.getUniqueUriHitCount(start, end, uris);
+        if (uris == null) {
+            if (unique) {
+                return statsRepository.getUniqueUriHitCountNotUris(start, end);
+            } else {
+                return sortHitsAsc(statsRepository.getUriHitCountNotUris(start, end));
+            }
+        } else {
+            if (unique) {
+                return statsRepository.getUniqueUriHitCount(start, end, uris);
+            } else {
+                return sortHitsAsc(statsRepository.getUriHitCount(start, end, uris));
+            }
         }
     }
 
@@ -41,7 +52,5 @@ public class StatsServiceImpl implements StatsService {
         return content.stream()
                 .sorted(Comparator.comparing(ShortStat::getHits).reversed())
                 .collect(Collectors.toList());
-
-        return statsRepository.getUriHitCount(start, end, uris);
     }
 }

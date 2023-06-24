@@ -8,7 +8,6 @@ import ru.practicum.huuudrich.model.event.UpdateEventUserRequest;
 import ru.practicum.huuudrich.model.request.EventRequestStatusUpdateRequest;
 import ru.practicum.huuudrich.model.request.EventRequestStatusUpdateResult;
 import ru.practicum.huuudrich.model.request.ParticipationRequestDto;
-import ru.practicum.huuudrich.utils.exception.EventStateException;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public interface UserService {
 
     EventFullDto getEventsByUserAndEvent(Long userId, Long eventId);
 
-    EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) throws EventStateException;
+    EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest);
 
     List<ParticipationRequestDto> getRequestsByInitiator(Long userId, Long eventId);
 

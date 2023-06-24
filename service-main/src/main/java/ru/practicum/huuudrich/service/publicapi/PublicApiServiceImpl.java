@@ -75,7 +75,7 @@ public class PublicApiServiceImpl implements PublicApiService {
     @Transactional
     @Override
     public List<EventShortDto> getAllEvents(String text, Boolean paid, List<Long> categories, LocalDateTime rangeStart,
-                                            LocalDateTime rangeEnd, Boolean onlyAvailable, Pageable pageable, HttpServletRequest request) throws BadRequestException {
+                                            LocalDateTime rangeEnd, Boolean onlyAvailable, Pageable pageable) throws BadRequestException {
         QEvent qEvent = QEvent.event;
 
         BooleanBuilder whereClause = new BooleanBuilder();
@@ -114,14 +114,6 @@ public class PublicApiServiceImpl implements PublicApiService {
         }
 
         List<Event> events = eventRepository.findAll(whereClause, pageable).getContent();
-
-        ClientRequest clientRequest = createClientRequest(request);
-
-        if (!statsClient.checkIp(request.getRemoteAddr())) {
-            eventRepository.incrementViewsList(events);
-        }
-
-        log.info(statsClient.saveRequest(clientRequest).toString());
 
         return EventMapper.INSTANCE.toShortDtoList(events);
     }

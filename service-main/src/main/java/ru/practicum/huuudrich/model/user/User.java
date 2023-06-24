@@ -2,8 +2,11 @@ package ru.practicum.huuudrich.model.user;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.huuudrich.model.subscription.UserSubscription;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users", schema = "public")
@@ -20,4 +23,11 @@ public class User {
     String name;
     @Column(unique = true)
     String email;
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<UserSubscription> followers = new ArrayList<>();
+    @OneToMany(mappedBy = "followed", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<UserSubscription> following = new ArrayList<>();
+    @Builder.Default
+    @JoinColumn(name = "allow_subscriptions")
+    Boolean allowSubscriptions = true;
 }
