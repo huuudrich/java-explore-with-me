@@ -74,10 +74,10 @@ public class UserController {
     }
 
     @PatchMapping("{userId}" + REQUEST_PATH + "/{requestId}/cancel")
-    public ResponseEntity<Void> deleteRequest(@PathVariable @Positive Long userId,
-                                              @PathVariable @Positive Long requestId) {
-        userService.deleteRequest(userId, requestId);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<ParticipationRequestDto> cancelRequest(@PathVariable @Positive Long userId,
+                                                                 @PathVariable @Positive Long requestId) {
+        ParticipationRequestDto requestDto = userService.cancelRequest(userId, requestId);
+        return new ResponseEntity<>(requestDto, HttpStatus.OK);
     }
 
     @GetMapping("{userId}" + EVENTS_PATH + "/{eventId}" + REQUEST_PATH)

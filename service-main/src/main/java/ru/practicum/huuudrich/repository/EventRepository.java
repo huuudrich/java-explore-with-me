@@ -18,7 +18,7 @@ import java.util.Optional;
 public interface EventRepository extends JpaRepository<Event, Long>, QuerydslPredicateExecutor<Event> {
     List<Event> getAllByInitiator(User initiator, Pageable pageable);
 
-    Optional<Event> getEventByInitiatorIdAndId(Long initiatorId, Long id);
+    Optional<Event> getEventByIdAndInitiatorId(Long EventId, Long initiatorId);
 
     @Modifying
     @Query("update Event e set e.confirmedRequests = e.confirmedRequests + 1 where e.id = :eventId")

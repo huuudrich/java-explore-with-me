@@ -43,7 +43,6 @@ public class UserServiceImpl implements UserService {
 
         return EventMapper.INSTANCE.toShortDtoList(events);
     }
-
     @Transactional
     @Override
     public EventFullDto createEvent(Long userId, NewEventDto newEventDto) {
@@ -67,6 +66,8 @@ public class UserServiceImpl implements UserService {
     public EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
         Event eventDb = getEvent(userId, eventId);
         Event event = EventMapper.INSTANCE.updateEventToEventRequest(updateEventUserRequest);
+
+        log.info(String.format("Update status eventId: %s", eventId));
 
         if (eventDb.getState() == EventState.PUBLISHED) {
             throw new DataIntegrityViolationException("Event state must be 'PENDING' or 'CANCELED'");
@@ -102,11 +103,13 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public EventRequestStatusUpdateResult updateStatusRequest(Long userId, Long eventId, EventRequestStatusUpdateRequest request) {
-        Event event = getEvent(eventId, userId);
+        Event event = getEvent(userId, eventId);
 
-        if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
+        Long limit = event.getParticipantLimit();
+
+        if (limit == 0 || !event.getRequestModeration()) {
             throw new DataIntegrityViolationException("The requests always confirmed");
-        } else if (event.getConfirmedRequests() != 0 && event.getConfirmedRequests() >= event.getParticipantLimit()) {
+        } else if (event.getConfirmedRequests() >= limit) {
             throw new DataIntegrityViolationException("The request limit has been reached");
         }
 
@@ -124,7 +127,9 @@ public class UserServiceImpl implements UserService {
                 re.setStatus(RequestStatus.REJECTED);
             } else {
                 re.setStatus(request.getStatus());
-                event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+                if (request.getStatus() == RequestStatus.CONFIRMED) {
+                    event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+                }
             }
         }
 
@@ -155,11 +160,14 @@ public class UserServiceImpl implements UserService {
     public ParticipationRequestDto createRequest(Long userId, Long eventId) {
         User requester = getUser(userId);
         Event event = getEvent(eventId);
+        Request request = new Request();
 
         Long initiatorId = event.getInitiator().getId();
         Optional<Request> existingRequest = requestRepository.findByRequesterAndEvent(requester, event);
 
-        event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+        Long limit = event.getParticipantLimit();
+        Long confirmedRequests = event.getConfirmedRequests();
+
 
         if (existingRequest.isPresent()) {
             throw new DataIntegrityViolationException("The request already exists");
@@ -169,23 +177,21 @@ public class UserServiceImpl implements UserService {
             throw new DataIntegrityViolationException("Event not published");
         }
 
-        Long limit = event.getParticipantLimit();
-
-        if (limit != 0) {
-            if (event.getConfirmedRequests() > limit) {
-                throw new DataIntegrityViolationException("The request limit has been reached");
-            }
+        if (limit != 0 && confirmedRequests >= limit) {
+            throw new DataIntegrityViolationException("The request limit has been reached");
         }
-
-        Request request = new Request();
-        request.setRequester(requester);
-        request.setEvent(event);
+        if (limit == 0) {
+            request.setStatus(RequestStatus.CONFIRMED);
+            eventRepository.incrementConfirmedRequests(eventId);
+        }
 
         if (!event.getRequestModeration()) {
             request.setStatus(RequestStatus.CONFIRMED);
+            eventRepository.incrementConfirmedRequests(eventId);
         }
 
-        eventRepository.incrementConfirmedRequests(eventId);
+        request.setRequester(requester);
+        request.setEvent(event);
 
         request = requestRepository.save(request);
 
@@ -194,12 +200,15 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void deleteRequest(Long userId, Long requestId) {
+    public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         getUser(userId);
         Request request = getRequest(requestId);
-        Long eventId = request.getEvent().getId();
-        requestRepository.delete(request);
-        eventRepository.decrementConfirmedRequests(eventId);
+        Event event = request.getEvent();
+
+        request.setStatus(RequestStatus.CANCELED);
+
+        eventRepository.decrementConfirmedRequests(event.getId());
+        return RequestMapper.INSTANCE.toRequestDto(request);
     }
 
     private List<ParticipationRequestDto> setUpListEvents(List<Request> requests, RequestStatus state) {
@@ -212,8 +221,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private Event getEvent(Long userId, Long eventId) {
-        return eventRepository.getEventByInitiatorIdAndId(userId, eventId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("User not found with id: %d and eventId: %d", userId, eventId)));
+        return eventRepository.getEventByIdAndInitiatorId(eventId, userId)
+                .orElseThrow(() -> new DataIntegrityViolationException(String.format("User not found with id: %d and eventId: %d", userId, eventId)));
     }
 
     private Event getEvent(Long eventId) {

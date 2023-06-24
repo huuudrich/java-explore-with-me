@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS events
     views              BIGINT      DEFAULT 0,
     FOREIGN KEY (category_id) REFERENCES category (id),
     FOREIGN KEY (initiator_id) REFERENCES users (id),
-    FOREIGN KEY (location_id) REFERENCES users (id),
+    FOREIGN KEY (location_id) REFERENCES location (id),
     FOREIGN KEY (compilation_id) REFERENCES compilations (id)
 );
 

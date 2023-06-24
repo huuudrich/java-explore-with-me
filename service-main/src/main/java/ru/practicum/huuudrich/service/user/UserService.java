@@ -28,5 +28,5 @@ public interface UserService {
 
     ParticipationRequestDto createRequest(Long userId, Long eventId);
 
-    void deleteRequest(Long userId, Long requestId);
+    ParticipationRequestDto cancelRequest(Long userId, Long requestId);
 }

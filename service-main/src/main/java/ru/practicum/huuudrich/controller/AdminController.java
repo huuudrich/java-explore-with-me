@@ -51,7 +51,7 @@ public class AdminController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
-    @DeleteMapping(USER_PATH + "{userId}")
+    @DeleteMapping(USER_PATH + "/{userId}")
     public ResponseEntity<Void> deleteUser(@Positive @PathVariable Long userId) {
         adminService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

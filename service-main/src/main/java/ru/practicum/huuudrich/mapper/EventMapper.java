@@ -7,7 +7,7 @@ import ru.practicum.huuudrich.model.event.*;
 
 import java.util.List;
 
-@Mapper
+@Mapper(uses = UserMapper.class)
 public interface EventMapper {
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
@@ -21,6 +21,7 @@ public interface EventMapper {
 
     List<EventShortDto> toShortDtoList(List<Event> events);
 
+    @Mapping(source = "initiator", target = "userShortDto")
     EventFullDto toFullDto(Event entity);
 
     @Mapping(target = "category", ignore = true)

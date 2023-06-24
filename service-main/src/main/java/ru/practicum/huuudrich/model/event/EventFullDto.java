@@ -1,11 +1,12 @@
 package ru.practicum.huuudrich.model.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.huuudrich.model.category.CategoryDto;
 import ru.practicum.huuudrich.model.event.Event.Location;
-import ru.practicum.huuudrich.model.user.User;
+import ru.practicum.huuudrich.model.user.UserShortDto;
 
 import java.time.LocalDateTime;
 
@@ -25,7 +26,8 @@ public class EventFullDto {
     String description;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime eventDate;
-    User initiator;
+    @JsonProperty("initiator")
+    UserShortDto userShortDto;
     Location location;
     Boolean paid;
     Long participantLimit;

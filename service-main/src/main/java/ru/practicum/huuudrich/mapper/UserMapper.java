@@ -4,12 +4,15 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import ru.practicum.huuudrich.model.user.User;
 import ru.practicum.huuudrich.model.user.UserDto;
+import ru.practicum.huuudrich.model.user.UserShortDto;
 
 import java.util.List;
 
 @Mapper
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+
+    UserShortDto initiatorToUserShortDto(User user);
 
     User toEntity(UserDto dto);
 
