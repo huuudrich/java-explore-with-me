@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
 
         return EventMapper.INSTANCE.toShortDtoList(events);
     }
+
     @Transactional
     @Override
     public EventFullDto createEvent(Long userId, NewEventDto newEventDto) {
@@ -205,9 +206,11 @@ public class UserServiceImpl implements UserService {
         Request request = getRequest(requestId);
         Event event = request.getEvent();
 
-        request.setStatus(RequestStatus.CANCELED);
+        if (request.getStatus() == RequestStatus.CONFIRMED) {
+            eventRepository.decrementConfirmedRequests(event.getId());
+        }
 
-        eventRepository.decrementConfirmedRequests(event.getId());
+        request.setStatus(RequestStatus.CANCELED);
         return RequestMapper.INSTANCE.toRequestDto(request);
     }
 
