@@ -114,9 +114,12 @@ public class PublicApiServiceImpl implements PublicApiService {
         }
 
         List<Event> events = eventRepository.findAll(whereClause, pageable).getContent();
-
         ClientRequest clientRequest = createClientRequest(request);
         log.info(statsClient.saveRequest(clientRequest).toString());
+
+        if (!statsClient.checkIp(request.getRemoteAddr())) {
+            eventRepository.incrementViewsList(events);
+        }
 
         return EventMapper.INSTANCE.toShortDtoList(events);
     }
