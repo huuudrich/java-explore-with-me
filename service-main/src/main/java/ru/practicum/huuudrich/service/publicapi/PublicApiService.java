@@ -21,7 +21,7 @@ public interface PublicApiService {
     CategoryDto getCategory(Long catId);
 
     List<EventShortDto> getAllEvents(String text, Boolean paid, List<Long> categories, LocalDateTime rangeStart,
-                                     LocalDateTime rangeEnd, Boolean onlyAvailable, Pageable pageable) throws BadRequestException;
+                                     LocalDateTime rangeEnd, Boolean onlyAvailable, Pageable pageable, HttpServletRequest request) throws BadRequestException;
 
     EventFullDto getEvent(Long eventId, HttpServletRequest request);
 }

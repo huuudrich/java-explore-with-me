@@ -67,7 +67,8 @@ public class PublicApiController {
                                                             @RequestParam(value = "onlyAvailable", defaultValue = "false", required = false) Boolean onlyAvailable,
                                                             @RequestParam(value = "sort", required = false) String sort,
                                                             @RequestParam(value = "from", defaultValue = "0", required = false) Integer from,
-                                                            @RequestParam(value = "size", defaultValue = "10", required = false) Integer size) throws BadRequestException {
+                                                            @RequestParam(value = "size", defaultValue = "10", required = false) Integer size,
+                                                            HttpServletRequest request) throws BadRequestException {
         Sort sorting;
         if (sort == null || sort.equals("EVENT_DATE")) {
             sorting = Sort.by(Sort.Direction.DESC, "eventDate");
@@ -79,7 +80,7 @@ public class PublicApiController {
 
         Pageable pageable = PageRequest.of(from / size, size, sorting);
 
-        List<EventShortDto> eventShortDtoList = publicService.getAllEvents(text, paid, categories, rangeStart, rangeEnd, onlyAvailable, pageable);
+        List<EventShortDto> eventShortDtoList = publicService.getAllEvents(text, paid, categories, rangeStart, rangeEnd, onlyAvailable, pageable, request);
 
         return new ResponseEntity<>(eventShortDtoList, HttpStatus.OK);
     }
