@@ -14,7 +14,10 @@ import ru.practicum.huuudrich.model.category.Category;
 import ru.practicum.huuudrich.model.category.CategoryDto;
 import ru.practicum.huuudrich.model.compilations.Compilation;
 import ru.practicum.huuudrich.model.compilations.CompilationDto;
-import ru.practicum.huuudrich.model.event.*;
+import ru.practicum.huuudrich.model.event.Event;
+import ru.practicum.huuudrich.model.event.EventFullDto;
+import ru.practicum.huuudrich.model.event.EventShortDto;
+import ru.practicum.huuudrich.model.event.EventState;
 import ru.practicum.huuudrich.repository.CategoryRepository;
 import ru.practicum.huuudrich.repository.CompilationRepository;
 import ru.practicum.huuudrich.repository.EventRepository;
@@ -75,7 +78,7 @@ public class PublicApiServiceImpl implements PublicApiService {
     @Transactional
     @Override
     public List<EventShortDto> getAllEvents(String text, Boolean paid, List<Long> categories, LocalDateTime rangeStart,
-                                            LocalDateTime rangeEnd, Boolean onlyAvailable, Pageable pageable) throws BadRequestException {
+                                            LocalDateTime rangeEnd, Boolean onlyAvailable, Pageable pageable, HttpServletRequest request) throws BadRequestException {
         QEvent qEvent = QEvent.event;
 
         BooleanBuilder whereClause = new BooleanBuilder();
@@ -114,6 +117,9 @@ public class PublicApiServiceImpl implements PublicApiService {
         }
 
         List<Event> events = eventRepository.findAll(whereClause, pageable).getContent();
+
+        ClientRequest clientRequest = createClientRequest(request);
+        log.info(statsClient.saveRequest(clientRequest).toString());
 
         return EventMapper.INSTANCE.toShortDtoList(events);
     }
