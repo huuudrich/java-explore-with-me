@@ -27,6 +27,7 @@ public interface EventRepository extends JpaRepository<Event, Long>, QuerydslPre
     @Modifying
     @Query("update Event e set e.views = e.views + 1 where e.id = :eventId")
     void incrementViews(@Param("eventId") Long eventId);
+
     @Modifying
     @Query("update Event e set e.views = e.views + 1 where e IN :events")
     void incrementViewsList(@Param("events") List<Event> events);
