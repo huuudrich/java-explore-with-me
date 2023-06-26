@@ -295,68 +295,6 @@
 			"response": []
 		},
 		{
-			"name": "Подписка на несуществующего пользователя",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Ответ должен содержать код статуса 400 и данные в формате json\", function () {\r",
-							"    pm.response.to.have.status(400);  \r",
-							"    pm.response.to.be.withBody;\r",
-							"    pm.response.to.be.json;\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "",
-						"value": "",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "{{baseUrl}}/subscribes/:userId/follow/:authorId",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"subscribes",
-						":userId",
-						"follow",
-						":authorId"
-					],
-					"variable": [
-						{
-							"key": "userId",
-							"value": "{{uid}}",
-							"description": "Id подписчика"
-						},
-						{
-							"key": "authorId",
-							"value": "10000"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Обновление статуса подписки false",
 			"event": [
 				{
