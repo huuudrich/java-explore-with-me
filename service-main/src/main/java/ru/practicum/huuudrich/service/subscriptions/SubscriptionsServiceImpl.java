@@ -2,15 +2,18 @@ package ru.practicum.huuudrich.service.subscriptions;
 
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.exception.BadRequestException;
 import ru.practicum.huuudrich.mapper.EventMapper;
 import ru.practicum.huuudrich.mapper.SubscribesMapper;
+import ru.practicum.huuudrich.mapper.UserMapper;
 import ru.practicum.huuudrich.model.event.Event;
 import ru.practicum.huuudrich.model.event.EventShortDto;
 import ru.practicum.huuudrich.model.subscription.UserSubscribeDto;
 import ru.practicum.huuudrich.model.subscription.UserSubscription;
 import ru.practicum.huuudrich.model.user.User;
+import ru.practicum.huuudrich.model.user.UserShortDto;
 import ru.practicum.huuudrich.repository.EventRepository;
 import ru.practicum.huuudrich.repository.SubscriptionsRepository;
 import ru.practicum.huuudrich.repository.UserRepository;
@@ -51,24 +54,32 @@ public class SubscriptionsServiceImpl implements SubscriptionsService {
         userSubscription.setFollowed(followedUser);
         userSubscription.setFollower(followerUser);
 
-        UserSubscribeDto userSubscribeDto = SubscribesMapper.INSTANCE.userToDto(followerUser);
-        userSubscribeDto.setFollowers(new ArrayList<>(userRepository.getSubcriptionsIdsByUser(followerUser)));
-        userSubscribeDto.setFollowing(new ArrayList<>(userRepository.getFollowedIdsByUser(followerUser)));
-
         subscriptionsRepository.save(userSubscription);
 
-        return userSubscribeDto;
+        UserSubscribeDto userSubscribeDto = SubscribesMapper.INSTANCE.userToDto(followerUser);
+
+        return setListsUserSubscription(userSubscribeDto, followerUser);
     }
 
-    @Transactional
     @Override
     public UserSubscribeDto getSubscription(Long userId) {
         User user = getUser(userId);
 
         UserSubscribeDto userSubscribeDto = SubscribesMapper.INSTANCE.userToDto(user);
-        userSubscribeDto.setFollowers(new ArrayList<>(userRepository.getSubcriptionsIdsByUser(user)));
-        userSubscribeDto.setFollowing(new ArrayList<>(userRepository.getFollowedIdsByUser(user)));
-        return userSubscribeDto;
+
+        return setListsUserSubscription(userSubscribeDto, user);
+    }
+
+    @Override
+    public UserSubscribeDto updateAllowSubscription(Long userId, Boolean status) {
+        User user = getUser(userId);
+
+        user.setAllowSubscriptions(status);
+        userRepository.save(user);
+
+        UserSubscribeDto userSubscribeDto = SubscribesMapper.INSTANCE.userToDto(user);
+
+        return setListsUserSubscription(userSubscribeDto, user);
     }
 
     @Transactional
@@ -103,6 +114,14 @@ public class SubscriptionsServiceImpl implements SubscriptionsService {
         }
     }
 
+    @Override
+    public List<UserShortDto> getFollowers(Long userId, Pageable pageable) {
+        User user = getUser(userId);
+        List<User> users = userRepository.getFollowersByUser(user, pageable);
+
+        return UserMapper.INSTANCE.toListUserShort(users);
+    }
+
     @Transactional
     @Override
     public List<EventShortDto> getSubscribedUsersEvents(Long userId) {
@@ -116,6 +135,12 @@ public class SubscriptionsServiceImpl implements SubscriptionsService {
                 .collect(Collectors.toList());
 
         return EventMapper.INSTANCE.toShortDtoList(events);
+    }
+
+    private UserSubscribeDto setListsUserSubscription(UserSubscribeDto userSubscribeDto, User user) {
+        userSubscribeDto.setFollowers(new ArrayList<>(userRepository.getSubcriptionsIdsByUser(user)));
+        userSubscribeDto.setFollowing(new ArrayList<>(userRepository.getFollowedIdsByUser(user)));
+        return userSubscribeDto;
     }
 
     private UserSubscription getUserSubscribed(User follower, User followed) {

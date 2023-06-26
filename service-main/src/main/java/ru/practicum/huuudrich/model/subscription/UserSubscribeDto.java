@@ -3,7 +3,6 @@ package ru.practicum.huuudrich.model.subscription;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -15,10 +14,8 @@ import java.util.List;
 public class UserSubscribeDto {
     Long id;
     String name;
-    @Builder.Default
-    List<Long> followers = new ArrayList<>();
-    @Builder.Default
-    List<Long> following = new ArrayList<>();
+    List<Long> followers;
+    List<Long> following;
     @Builder.Default
     Boolean allowSubscriptions = true;
 }

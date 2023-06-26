@@ -14,6 +14,8 @@ public interface UserMapper {
 
     UserShortDto initiatorToUserShortDto(User user);
 
+    List<UserShortDto> toListUserShort(List<User> users);
+
     User toEntity(UserDto dto);
 
     UserDto toDto(User user);

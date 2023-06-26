@@ -23,9 +23,9 @@ public class User {
     String name;
     @Column(unique = true)
     String email;
-    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "follower")
     List<UserSubscription> followers = new ArrayList<>();
-    @OneToMany(mappedBy = "followed", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "followed")
     List<UserSubscription> following = new ArrayList<>();
     @Builder.Default
     @JoinColumn(name = "allow_subscriptions")

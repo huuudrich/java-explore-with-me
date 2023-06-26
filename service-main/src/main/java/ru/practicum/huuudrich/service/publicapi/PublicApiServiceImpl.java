@@ -7,11 +7,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.exception.BadRequestException;
 import ru.practicum.huuudrich.client.StatsClient;
-import ru.practicum.huuudrich.mapper.*;
-import ru.practicum.huuudrich.model.category.*;
-import ru.practicum.huuudrich.model.compilations.*;
+import ru.practicum.huuudrich.mapper.CategoryMapper;
+import ru.practicum.huuudrich.mapper.CompilationMapper;
+import ru.practicum.huuudrich.mapper.EventMapper;
+import ru.practicum.huuudrich.model.category.Category;
+import ru.practicum.huuudrich.model.category.CategoryDto;
+import ru.practicum.huuudrich.model.compilations.Compilation;
+import ru.practicum.huuudrich.model.compilations.CompilationDto;
 import ru.practicum.huuudrich.model.event.*;
-import ru.practicum.huuudrich.repository.*;
+import ru.practicum.huuudrich.repository.CategoryRepository;
+import ru.practicum.huuudrich.repository.CompilationRepository;
+import ru.practicum.huuudrich.repository.EventRepository;
 import ru.practicum.model.ClientRequest;
 
 import javax.persistence.EntityNotFoundException;
@@ -146,5 +152,4 @@ public class PublicApiServiceImpl implements PublicApiService {
         clientRequest.setUri(request.getRequestURI());
         return clientRequest;
     }
-
 }
