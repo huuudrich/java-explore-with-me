@@ -8,12 +8,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.exception.BadRequestException;
 import ru.practicum.huuudrich.model.category.CategoryDto;
 import ru.practicum.huuudrich.model.compilations.CompilationDto;
 import ru.practicum.huuudrich.model.event.EventFullDto;
 import ru.practicum.huuudrich.model.event.EventShortDto;
 import ru.practicum.huuudrich.service.publicapi.PublicApiService;
-import ru.practicum.huuudrich.utils.exception.BadRequestException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;

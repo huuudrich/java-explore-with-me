@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.exception.BadRequestException;
 import ru.practicum.huuudrich.model.event.EventShortDto;
 import ru.practicum.huuudrich.model.subscription.UserSubscribeDto;
 import ru.practicum.huuudrich.service.subscriptions.SubscriptionsService;
-import ru.practicum.huuudrich.utils.exception.BadRequestException;
 
 import javax.validation.constraints.Positive;
 import java.util.List;

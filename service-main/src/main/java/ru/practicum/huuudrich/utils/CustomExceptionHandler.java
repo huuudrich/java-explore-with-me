@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.practicum.huuudrich.model.error.ApiError;
-import ru.practicum.huuudrich.utils.exception.BadRequestException;
+import ru.practicum.exception.BadRequestException;
+import ru.practicum.model.ApiError;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;

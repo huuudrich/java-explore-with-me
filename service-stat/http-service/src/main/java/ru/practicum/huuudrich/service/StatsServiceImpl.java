@@ -3,6 +3,7 @@ package ru.practicum.huuudrich.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.exception.BadRequestException;
 import ru.practicum.huuudrich.model.ServiceRequest;
 import ru.practicum.huuudrich.model.ShortStat;
 import ru.practicum.huuudrich.repository.StatsRepository;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor
@@ -26,8 +28,13 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<ShortStat> getStatistic(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+    public List<ShortStat> getStatistic(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) throws BadRequestException {
         log.info("Getting statistic");
+
+        if (start.isAfter(end)) {
+            throw new BadRequestException("Start is after end");
+        }
+
         if (uris == null) {
             if (unique) {
                 return statsRepository.getUniqueUriHitCountNotUris(start, end);

@@ -13,5 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>http-service</module>
+        <module>shared-dto</module>
     </modules>
 </project>

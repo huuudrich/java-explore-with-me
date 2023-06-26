@@ -3,6 +3,7 @@ package ru.practicum.huuudrich.service.subscriptions;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import ru.practicum.exception.BadRequestException;
 import ru.practicum.huuudrich.mapper.EventMapper;
 import ru.practicum.huuudrich.mapper.SubscribesMapper;
 import ru.practicum.huuudrich.model.event.Event;
@@ -13,7 +14,6 @@ import ru.practicum.huuudrich.model.user.User;
 import ru.practicum.huuudrich.repository.EventRepository;
 import ru.practicum.huuudrich.repository.SubscriptionsRepository;
 import ru.practicum.huuudrich.repository.UserRepository;
-import ru.practicum.huuudrich.utils.exception.BadRequestException;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;

@@ -1,8 +1,8 @@
 package ru.practicum.huuudrich.service.subscriptions;
 
+import ru.practicum.exception.BadRequestException;
 import ru.practicum.huuudrich.model.event.EventShortDto;
 import ru.practicum.huuudrich.model.subscription.UserSubscribeDto;
-import ru.practicum.huuudrich.utils.exception.BadRequestException;
 
 import java.util.List;
 
