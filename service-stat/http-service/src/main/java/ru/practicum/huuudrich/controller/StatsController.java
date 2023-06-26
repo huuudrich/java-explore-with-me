@@ -40,7 +40,7 @@ public class StatsController {
     }
 
     @GetMapping("/check")
-    public Boolean checkIp(@RequestParam(value = "ip") String ip) {
-        return statsService.checkUri(ip);
+    public Boolean checkIp(@RequestParam(value = "ip") String ip, @RequestParam(value = "uri") String uri) {
+        return statsService.checkIpAndUri(ip, uri);
     }
 }

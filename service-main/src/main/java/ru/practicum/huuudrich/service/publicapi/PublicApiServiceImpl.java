@@ -117,7 +117,7 @@ public class PublicApiServiceImpl implements PublicApiService {
         ClientRequest clientRequest = createClientRequest(request);
         log.info(statsClient.saveRequest(clientRequest).toString());
 
-        if (!statsClient.checkIp(request.getRemoteAddr())) {
+        if (!statsClient.checkIp(clientRequest.getIp(), clientRequest.getUri())) {
             eventRepository.incrementViewsList(events);
         }
 
@@ -134,7 +134,8 @@ public class PublicApiServiceImpl implements PublicApiService {
         }
         ClientRequest clientRequest = createClientRequest(request);
 
-        if (!statsClient.checkIp(request.getRemoteAddr())) {
+
+        if (!statsClient.checkIp(clientRequest.getIp(), clientRequest.getUri())) {
             eventRepository.incrementViews(eventId);
         }
 

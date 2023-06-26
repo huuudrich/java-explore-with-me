@@ -11,5 +11,5 @@ public interface StatsService {
 
     List<ShortStat> getStatistic(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique);
 
-    Boolean checkUri(String uri);
+    Boolean checkIpAndUri(String ip, String uri);
 }

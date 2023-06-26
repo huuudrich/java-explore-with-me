@@ -44,8 +44,8 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public Boolean checkUri(String ip) {
-        return statsRepository.existsByIp(ip);
+    public Boolean checkIpAndUri(String ip, String uri) {
+        return statsRepository.existsByIpAndUri(ip, uri);
     }
 
     private List<ShortStat> sortHitsAsc(List<ShortStat> content) {

@@ -36,9 +36,10 @@ public class StatsClient {
         return restTemplate.getForEntity(params.toUriString(), ClientRequest.class);
     }
 
-    public Boolean checkIp(String checkIp) {
+    public Boolean checkIp(String checkIp, String checkUri) {
         UriComponentsBuilder params = UriComponentsBuilder.fromHttpUrl(uri + "/check")
-                .queryParam("ip", checkIp);
+                .queryParam("ip", checkIp)
+                .queryParam("uri", checkUri);
         return restTemplate.getForObject(params.toUriString(), Boolean.class);
     }
 }
