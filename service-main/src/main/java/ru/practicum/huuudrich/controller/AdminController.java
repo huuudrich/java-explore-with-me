@@ -1,21 +1,15 @@
 package ru.practicum.huuudrich.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.huuudrich.model.category.CategoryDto;
-import ru.practicum.huuudrich.model.compilations.CompilationDto;
-import ru.practicum.huuudrich.model.compilations.NewCompilationDto;
-import ru.practicum.huuudrich.model.compilations.UpdateCompilationRequest;
-import ru.practicum.huuudrich.model.event.EventFullDto;
-import ru.practicum.huuudrich.model.event.EventState;
-import ru.practicum.huuudrich.model.event.UpdateEventAdminRequest;
+import ru.practicum.huuudrich.model.compilations.*;
+import ru.practicum.huuudrich.model.event.*;
 import ru.practicum.huuudrich.model.user.UserDto;
 import ru.practicum.huuudrich.service.admin.AdminService;
 

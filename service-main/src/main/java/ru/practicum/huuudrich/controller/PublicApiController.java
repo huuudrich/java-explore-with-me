@@ -10,9 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.exception.BadRequestException;
 import ru.practicum.huuudrich.model.category.CategoryDto;
-import ru.practicum.huuudrich.model.compilations.CompilationDto;
-import ru.practicum.huuudrich.model.event.EventFullDto;
-import ru.practicum.huuudrich.model.event.EventShortDto;
+import ru.practicum.huuudrich.model.compilations.*;
+import ru.practicum.huuudrich.model.event.*;
 import ru.practicum.huuudrich.service.publicapi.PublicApiService;
 
 import javax.servlet.http.HttpServletRequest;

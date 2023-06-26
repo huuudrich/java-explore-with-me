@@ -1,13 +1,8 @@
 package ru.practicum.huuudrich.service.user;
 
 import org.springframework.data.domain.Pageable;
-import ru.practicum.huuudrich.model.event.EventFullDto;
-import ru.practicum.huuudrich.model.event.EventShortDto;
-import ru.practicum.huuudrich.model.event.NewEventDto;
-import ru.practicum.huuudrich.model.event.UpdateEventUserRequest;
-import ru.practicum.huuudrich.model.request.EventRequestStatusUpdateRequest;
-import ru.practicum.huuudrich.model.request.EventRequestStatusUpdateResult;
-import ru.practicum.huuudrich.model.request.ParticipationRequestDto;
+import ru.practicum.huuudrich.model.event.*;
+import ru.practicum.huuudrich.model.request.*;
 
 import java.util.List;
 

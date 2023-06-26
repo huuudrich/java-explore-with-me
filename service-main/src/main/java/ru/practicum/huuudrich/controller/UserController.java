@@ -8,13 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.huuudrich.model.event.EventFullDto;
-import ru.practicum.huuudrich.model.event.EventShortDto;
-import ru.practicum.huuudrich.model.event.NewEventDto;
-import ru.practicum.huuudrich.model.event.UpdateEventUserRequest;
-import ru.practicum.huuudrich.model.request.EventRequestStatusUpdateRequest;
-import ru.practicum.huuudrich.model.request.EventRequestStatusUpdateResult;
-import ru.practicum.huuudrich.model.request.ParticipationRequestDto;
+import ru.practicum.huuudrich.model.event.*;
+import ru.practicum.huuudrich.model.request.*;
 import ru.practicum.huuudrich.service.user.UserService;
 
 import javax.validation.Valid;

@@ -14,11 +14,4 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>shared-dto</name>
     <description>shared-dto</description>
-
-    <properties>
-        <maven.compiler.source>19</maven.compiler.source>
-        <maven.compiler.target>19</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
 </project>
