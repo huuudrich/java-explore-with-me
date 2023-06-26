@@ -5,18 +5,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.exception.BadRequestException;
-import ru.practicum.huuudrich.mapper.EventMapper;
-import ru.practicum.huuudrich.mapper.SubscribesMapper;
-import ru.practicum.huuudrich.mapper.UserMapper;
+import ru.practicum.huuudrich.mapper.*;
 import ru.practicum.huuudrich.model.event.Event;
 import ru.practicum.huuudrich.model.event.EventShortDto;
 import ru.practicum.huuudrich.model.subscription.UserSubscribeDto;
 import ru.practicum.huuudrich.model.subscription.UserSubscription;
 import ru.practicum.huuudrich.model.user.User;
 import ru.practicum.huuudrich.model.user.UserShortDto;
-import ru.practicum.huuudrich.repository.EventRepository;
-import ru.practicum.huuudrich.repository.SubscriptionsRepository;
-import ru.practicum.huuudrich.repository.UserRepository;
+import ru.practicum.huuudrich.repository.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -34,18 +30,19 @@ public class SubscriptionsServiceImpl implements SubscriptionsService {
     @Override
     public UserSubscribeDto addSubscribe(Long followedId, Long followerId) throws BadRequestException {
         if (Objects.equals(followedId, followerId)) {
-            throw new BadRequestException("FollowedId and followedId cannot be equal");
+            throw new BadRequestException(String.format("FollowedId: %d and followerId: %d cannot be equal",
+                    followedId, followerId));
         }
 
         if (subscriptionsRepository.findByFollowerIdAndFollowedId(followerId, followedId)
                 .isPresent()) {
-            throw new BadRequestException("User is already subscribe");
+            throw new BadRequestException(String.format("User with id: %d is already subscribe", followerId));
         }
 
         User followedUser = getUser(followedId);
 
         if (!followedUser.getAllowSubscriptions()) {
-            throw new DataIntegrityViolationException("User banned subscriptions");
+            throw new DataIntegrityViolationException(String.format("Author id: %d banned subscriptions", followedId));
         }
 
         User followerUser = getUser(followerId);
