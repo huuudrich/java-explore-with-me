@@ -16,6 +16,6 @@ public class CategoryDto {
     Long id;
 
     @NotBlank(message = "Category name cannot be blank")
-    @Size(min = 1, max = 50, message = "Category name should be between 20 and 2000 characters")
+    @Size(min = 1, max = 50, message = "Category name should be between 1 and 50 characters")
     String name;
 }

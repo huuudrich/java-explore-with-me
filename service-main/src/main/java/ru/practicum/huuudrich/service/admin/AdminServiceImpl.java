@@ -6,12 +6,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.huuudrich.mapper.*;
-import ru.practicum.huuudrich.model.category.*;
-import ru.practicum.huuudrich.model.compilations.*;
+import ru.practicum.huuudrich.mapper.CategoryMapper;
+import ru.practicum.huuudrich.mapper.CompilationMapper;
+import ru.practicum.huuudrich.mapper.EventMapper;
+import ru.practicum.huuudrich.mapper.UserMapper;
+import ru.practicum.huuudrich.model.category.Category;
+import ru.practicum.huuudrich.model.category.CategoryDto;
+import ru.practicum.huuudrich.model.compilations.Compilation;
+import ru.practicum.huuudrich.model.compilations.CompilationDto;
+import ru.practicum.huuudrich.model.compilations.NewCompilationDto;
+import ru.practicum.huuudrich.model.compilations.UpdateCompilationRequest;
 import ru.practicum.huuudrich.model.event.*;
-import ru.practicum.huuudrich.model.user.*;
-import ru.practicum.huuudrich.repository.*;
+import ru.practicum.huuudrich.model.user.User;
+import ru.practicum.huuudrich.model.user.UserDto;
+import ru.practicum.huuudrich.repository.CategoryRepository;
+import ru.practicum.huuudrich.repository.CompilationRepository;
+import ru.practicum.huuudrich.repository.EventRepository;
+import ru.practicum.huuudrich.repository.UserRepository;
 import ru.practicum.huuudrich.utils.CopyNonNullProperties;
 
 import javax.persistence.EntityNotFoundException;
@@ -63,9 +74,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public CategoryDto addCategory(CategoryDto categoryDto) {
         log.info(String.format("Add category with name: %s", categoryDto.getName()));
-        Category category = CategoryMapper.INSTANCE.toEntity(categoryDto);
-        categoryRepository.save(category);
-        return CategoryMapper.INSTANCE.toDto(category);
+        Category category = CategoryMapper.INSTANCE.toCategory(categoryDto);
+        return CategoryMapper.INSTANCE.toDto(categoryRepository.save(category));
     }
 
     @Override
@@ -77,7 +87,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto) {
         categoryDto.setId(categoryId);
-        Category category = CategoryMapper.INSTANCE.toEntity(categoryDto);
+        Category category = CategoryMapper.INSTANCE.toCategory(categoryDto);
         categoryRepository.save(category);
         return CategoryMapper.INSTANCE.toDto(category);
     }
