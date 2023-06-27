@@ -1,2 +1,2 @@
 # java-explore-with-me
-![Alt text](architicture.jpg)
+https://github.com/huuudrich/java-explore-with-me/pull/6

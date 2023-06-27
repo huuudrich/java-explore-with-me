@@ -35,6 +35,6 @@ public class UpdateEventUserRequest {
     Long participantLimit;
     Boolean requestModeration;
     StateActionUsr stateAction;
-    @Size(min = 3, max = 120, message = "Title should be between 20 and 2000 characters")
+    @Size(min = 3, max = 120, message = "Title should be between 3 and 120 characters")
     String title;
 }

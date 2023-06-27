@@ -2,12 +2,8 @@ package ru.practicum.huuudrich.service.admin;
 
 import org.springframework.data.domain.Pageable;
 import ru.practicum.huuudrich.model.category.CategoryDto;
-import ru.practicum.huuudrich.model.compilations.CompilationDto;
-import ru.practicum.huuudrich.model.compilations.NewCompilationDto;
-import ru.practicum.huuudrich.model.compilations.UpdateCompilationRequest;
-import ru.practicum.huuudrich.model.event.EventFullDto;
-import ru.practicum.huuudrich.model.event.EventState;
-import ru.practicum.huuudrich.model.event.UpdateEventAdminRequest;
+import ru.practicum.huuudrich.model.compilations.*;
+import ru.practicum.huuudrich.model.event.*;
 import ru.practicum.huuudrich.model.user.UserDto;
 
 import java.time.LocalDateTime;

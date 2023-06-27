@@ -8,12 +8,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.exception.BadRequestException;
 import ru.practicum.huuudrich.model.category.CategoryDto;
-import ru.practicum.huuudrich.model.compilations.CompilationDto;
-import ru.practicum.huuudrich.model.event.EventFullDto;
-import ru.practicum.huuudrich.model.event.EventShortDto;
+import ru.practicum.huuudrich.model.compilations.*;
+import ru.practicum.huuudrich.model.event.*;
 import ru.practicum.huuudrich.service.publicapi.PublicApiService;
-import ru.practicum.huuudrich.utils.exception.BadRequestException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
@@ -24,9 +23,9 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping
 public class PublicApiController {
-    private final static String CATEGORY_PATH = "/categories";
-    private final static String EVENT_PATH = "/events";
-    private final static String COMPILATION_PATH = "/compilations";
+    private static final String CATEGORY_PATH = "/categories";
+    private static final String EVENT_PATH = "/events";
+    private static final String COMPILATION_PATH = "/compilations";
     private final PublicApiService publicService;
 
     @GetMapping(COMPILATION_PATH)

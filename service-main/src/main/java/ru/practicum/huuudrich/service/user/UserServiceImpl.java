@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.huuudrich.mapper.EventMapper;
-import ru.practicum.huuudrich.mapper.RequestMapper;
+import ru.practicum.huuudrich.mapper.*;
 import ru.practicum.huuudrich.model.category.Category;
 import ru.practicum.huuudrich.model.event.*;
 import ru.practicum.huuudrich.model.request.*;
@@ -16,7 +15,6 @@ import ru.practicum.huuudrich.repository.EventRepository;
 import ru.practicum.huuudrich.repository.RequestRepository;
 import ru.practicum.huuudrich.repository.UserRepository;
 import ru.practicum.huuudrich.utils.CopyNonNullProperties;
-import ru.practicum.huuudrich.utils.exception.EventStateException;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -34,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final CategoryRepository categoryRepository;
     private final RequestRepository requestRepository;
 
+    @Transactional
     @Override
     public List<EventShortDto> getEventsByCurrentUser(Long userId, Pageable pageable) {
         User user = getUser(userId);
@@ -64,12 +63,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) throws EventStateException {
+    public EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
         Event eventDb = getEvent(userId, eventId);
         Event event = EventMapper.INSTANCE.updateEventToEventRequest(updateEventUserRequest);
 
+        log.info(String.format("Update status eventId: %s", eventId));
+
         if (eventDb.getState() == EventState.PUBLISHED) {
-            throw new EventStateException("Event state must be 'PENDING' or 'CANCELED'");
+            throw new DataIntegrityViolationException("Event state must be 'PENDING' or 'CANCELED'");
         }
 
         CopyNonNullProperties.copy(event, eventDb);
@@ -102,11 +103,13 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public EventRequestStatusUpdateResult updateStatusRequest(Long userId, Long eventId, EventRequestStatusUpdateRequest request) {
-        Event event = getEvent(eventId, userId);
+        Event event = getEvent(userId, eventId);
 
-        if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
+        Long limit = event.getParticipantLimit();
+
+        if (limit == 0 || !event.getRequestModeration()) {
             throw new DataIntegrityViolationException("The requests always confirmed");
-        } else if (event.getConfirmedRequests() > event.getParticipantLimit()) {
+        } else if (event.getConfirmedRequests() >= limit) {
             throw new DataIntegrityViolationException("The request limit has been reached");
         }
 
@@ -124,7 +127,9 @@ public class UserServiceImpl implements UserService {
                 re.setStatus(RequestStatus.REJECTED);
             } else {
                 re.setStatus(request.getStatus());
-                event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+                if (request.getStatus() == RequestStatus.CONFIRMED) {
+                    event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+                }
             }
         }
 
@@ -142,6 +147,7 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
+    //requests
     @Override
     public List<ParticipationRequestDto> getRequestsByUser(Long userId) {
         User requester = getUser(userId);
@@ -154,42 +160,57 @@ public class UserServiceImpl implements UserService {
     public ParticipationRequestDto createRequest(Long userId, Long eventId) {
         User requester = getUser(userId);
         Event event = getEvent(eventId);
+        Request request = new Request();
 
         Long initiatorId = event.getInitiator().getId();
         Optional<Request> existingRequest = requestRepository.findByRequesterAndEvent(requester, event);
+
+        Long limit = event.getParticipantLimit();
+        Long confirmedRequests = event.getConfirmedRequests();
+
+
         if (existingRequest.isPresent()) {
             throw new DataIntegrityViolationException("The request already exists");
         } else if (Objects.equals(initiatorId, userId)) {
-            throw new EntityNotFoundException("The initiator cannot send a request");
+            throw new DataIntegrityViolationException("The initiator cannot send a request");
         } else if (event.getState() != EventState.PUBLISHED) {
             throw new DataIntegrityViolationException("Event not published");
-        } else if (event.getConfirmedRequests() > event.getParticipantLimit()) {
-            throw new DataIntegrityViolationException("The request limit has been reached");
         }
 
-        Request request = new Request();
-        request.setRequester(requester);
-        request.setEvent(event);
+        if (limit != 0 && confirmedRequests >= limit) {
+            throw new DataIntegrityViolationException("The request limit has been reached");
+        }
+        if (limit == 0) {
+            request.setStatus(RequestStatus.CONFIRMED);
+            eventRepository.incrementConfirmedRequests(eventId);
+        }
 
         if (!event.getRequestModeration()) {
             request.setStatus(RequestStatus.CONFIRMED);
+            eventRepository.incrementConfirmedRequests(eventId);
         }
 
-        request = requestRepository.save(request);
-        eventRepository.incrementConfirmedRequests(eventId);
+        request.setRequester(requester);
+        request.setEvent(event);
 
+        request = requestRepository.save(request);
 
         return getRequestDto(request.getId());
     }
 
     @Transactional
     @Override
-    public void deleteRequest(Long userId, Long requestId) {
+    public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         getUser(userId);
         Request request = getRequest(requestId);
-        Long eventId = request.getEvent().getId();
-        requestRepository.delete(request);
-        eventRepository.decrementConfirmedRequests(eventId);
+        Event event = request.getEvent();
+
+        if (request.getStatus() == RequestStatus.CONFIRMED) {
+            eventRepository.decrementConfirmedRequests(event.getId());
+        }
+
+        request.setStatus(RequestStatus.CANCELED);
+        return RequestMapper.INSTANCE.toRequestDto(request);
     }
 
     private List<ParticipationRequestDto> setUpListEvents(List<Request> requests, RequestStatus state) {
@@ -202,8 +223,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private Event getEvent(Long userId, Long eventId) {
-        return eventRepository.getEventByInitiatorIdAndId(userId, eventId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("User not found with id: %d and eventId: %d", userId, eventId)));
+        return eventRepository.getEventByIdAndInitiatorId(eventId, userId)
+                .orElseThrow(() -> new DataIntegrityViolationException(String.format("User not found with id: %d and eventId: %d", userId, eventId)));
     }
 
     private Event getEvent(Long eventId) {

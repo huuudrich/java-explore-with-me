@@ -5,14 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ru.practicum</groupId>
-        <artifactId>explore-with-me</artifactId>
+        <artifactId>service-stat</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>service-stat</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>http-service</module>
-        <module>shared-dto</module>
-    </modules>
+    <groupId>com.yandex.huuudrich</groupId>
+    <artifactId>shared-dto</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>shared-dto</name>
+    <description>shared-dto</description>
 </project>

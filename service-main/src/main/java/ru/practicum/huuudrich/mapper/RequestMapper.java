@@ -12,19 +12,15 @@ import java.util.List;
 public interface RequestMapper {
     RequestMapper INSTANCE = Mappers.getMapper(RequestMapper.class);
 
-    @Mapping(target = "event", ignore = true)
-    @Mapping(target = "requester", ignore = true)
-    Request requestDtoToRequest(ParticipationRequestDto participationRequestDto);
-
-    @Mapping(target = "event", ignore = true)
-    @Mapping(target = "requester", ignore = true)
+    @Mapping(target = "event", source = "request.event.id")
+    @Mapping(target = "requester", source = "request.requester.id")
     ParticipationRequestDto toRequestDto(Request request);
 
-    @Mapping(target = "event", ignore = true)
-    @Mapping(target = "requester", ignore = true)
+    @Mapping(target = "event.id", source = "participationRequestDto.event")
+    @Mapping(target = "requester.id", source = "participationRequestDto.requester")
+    Request requestDtoToRequest(ParticipationRequestDto participationRequestDto);
+
     List<Request> listRequestDtoToRequest(List<ParticipationRequestDto> requestDtoList);
 
-    @Mapping(target = "event", ignore = true)
-    @Mapping(target = "requester", ignore = true)
     List<ParticipationRequestDto> listToRequestDto(List<Request> requests);
 }

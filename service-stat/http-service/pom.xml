@@ -15,6 +15,14 @@
     <name>http-service</name>
     <description>http-service</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.yandex.huuudrich</groupId>
+            <artifactId>shared-dto</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

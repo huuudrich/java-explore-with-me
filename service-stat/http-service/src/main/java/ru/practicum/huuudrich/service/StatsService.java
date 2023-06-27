@@ -1,7 +1,7 @@
 package ru.practicum.huuudrich.service;
 
-import ru.practicum.huuudrich.model.ServiceRequest;
-import ru.practicum.huuudrich.model.ShortStat;
+import ru.practicum.exception.BadRequestException;
+import ru.practicum.huuudrich.model.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 public interface StatsService {
     ServiceRequest createRequest(ServiceRequest serviceRequest);
 
-    List<ShortStat> getStatistic(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique);
+    List<ShortStat> getStatistic(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) throws BadRequestException;
 
-    Boolean checkUri(String uri);
+    Boolean checkIpAndUri(String ip, String uri);
 }

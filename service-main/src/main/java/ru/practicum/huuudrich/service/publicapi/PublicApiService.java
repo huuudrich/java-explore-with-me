@@ -1,11 +1,11 @@
 package ru.practicum.huuudrich.service.publicapi;
 
 import org.springframework.data.domain.Pageable;
+import ru.practicum.exception.BadRequestException;
 import ru.practicum.huuudrich.model.category.CategoryDto;
 import ru.practicum.huuudrich.model.compilations.CompilationDto;
 import ru.practicum.huuudrich.model.event.EventFullDto;
 import ru.practicum.huuudrich.model.event.EventShortDto;
-import ru.practicum.huuudrich.utils.exception.BadRequestException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import ru.practicum.model.ClientRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,9 +37,10 @@ public class StatsClient {
         return restTemplate.getForEntity(params.toUriString(), ClientRequest.class);
     }
 
-    public Boolean checkIp(String checkIp) {
+    public Boolean checkIp(String checkIp, String checkUri) {
         UriComponentsBuilder params = UriComponentsBuilder.fromHttpUrl(uri + "/check")
-                .queryParam("ip", checkIp);
+                .queryParam("ip", checkIp)
+                .queryParam("uri", checkUri);
         return restTemplate.getForObject(params.toUriString(), Boolean.class);
     }
 }

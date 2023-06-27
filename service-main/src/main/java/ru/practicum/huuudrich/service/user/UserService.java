@@ -1,14 +1,8 @@
 package ru.practicum.huuudrich.service.user;
 
 import org.springframework.data.domain.Pageable;
-import ru.practicum.huuudrich.model.event.EventFullDto;
-import ru.practicum.huuudrich.model.event.EventShortDto;
-import ru.practicum.huuudrich.model.event.NewEventDto;
-import ru.practicum.huuudrich.model.event.UpdateEventUserRequest;
-import ru.practicum.huuudrich.model.request.EventRequestStatusUpdateRequest;
-import ru.practicum.huuudrich.model.request.EventRequestStatusUpdateResult;
-import ru.practicum.huuudrich.model.request.ParticipationRequestDto;
-import ru.practicum.huuudrich.utils.exception.EventStateException;
+import ru.practicum.huuudrich.model.event.*;
+import ru.practicum.huuudrich.model.request.*;
 
 import java.util.List;
 
@@ -19,7 +13,7 @@ public interface UserService {
 
     EventFullDto getEventsByUserAndEvent(Long userId, Long eventId);
 
-    EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) throws EventStateException;
+    EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest);
 
     List<ParticipationRequestDto> getRequestsByInitiator(Long userId, Long eventId);
 
@@ -29,5 +23,5 @@ public interface UserService {
 
     ParticipationRequestDto createRequest(Long userId, Long eventId);
 
-    void deleteRequest(Long userId, Long requestId);
+    ParticipationRequestDto cancelRequest(Long userId, Long requestId);
 }

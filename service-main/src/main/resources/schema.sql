@@ -1,15 +1,26 @@
-DROP TABLE IF EXISTS requests CASCADE;
-DROP TABLE IF EXISTS events CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS location CASCADE;
+DROP TABLE IF EXISTS user_subscriptions;
 DROP TABLE IF EXISTS category CASCADE;
+DROP TABLE IF EXISTS location CASCADE;
 DROP TABLE IF EXISTS compilations CASCADE;
+DROP TABLE IF EXISTS events CASCADE;
+DROP TABLE IF EXISTS requests CASCADE;
 
 CREATE TABLE IF NOT EXISTS users
 (
-    id    BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name  VARCHAR(255) NOT NULL UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE
+    id                  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name                VARCHAR(255) NOT NULL UNIQUE,
+    email               VARCHAR(255) NOT NULL UNIQUE,
+    allow_subscriptions BOOLEAN      NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_subscriptions
+(
+    id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    follower_id BIGINT,
+    followed_id BIGINT,
+    FOREIGN KEY (follower_id) REFERENCES users (id),
+    FOREIGN KEY (followed_id) REFERENCES users (id)
 );
 
 CREATE TABLE IF NOT EXISTS category
@@ -29,7 +40,7 @@ CREATE TABLE IF NOT EXISTS compilations
 (
     id     BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     pinned BOOLEAN DEFAULT false,
-    title  varchar(70) NOT NULL
+    title  varchar(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS events
@@ -49,11 +60,11 @@ CREATE TABLE IF NOT EXISTS events
     published_on       TIMESTAMP WITHOUT TIME ZONE,
     request_moderation BOOLEAN     DEFAULT true,
     state              VARCHAR(20) DEFAULT 'PENDING',
-    title              VARCHAR(120),
+    title              VARCHAR(255),
     views              BIGINT      DEFAULT 0,
     FOREIGN KEY (category_id) REFERENCES category (id),
     FOREIGN KEY (initiator_id) REFERENCES users (id),
-    FOREIGN KEY (location_id) REFERENCES users (id),
+    FOREIGN KEY (location_id) REFERENCES location (id),
     FOREIGN KEY (compilation_id) REFERENCES compilations (id)
 );
 
@@ -67,5 +78,7 @@ CREATE TABLE IF NOT EXISTS requests
     FOREIGN KEY (event_id) REFERENCES events (id),
     FOREIGN KEY (requester_id) REFERENCES users (id)
 );
+
+
 
 

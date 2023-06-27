@@ -1,21 +1,15 @@
 package ru.practicum.huuudrich.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.huuudrich.model.category.CategoryDto;
-import ru.practicum.huuudrich.model.compilations.CompilationDto;
-import ru.practicum.huuudrich.model.compilations.NewCompilationDto;
-import ru.practicum.huuudrich.model.compilations.UpdateCompilationRequest;
-import ru.practicum.huuudrich.model.event.EventFullDto;
-import ru.practicum.huuudrich.model.event.EventState;
-import ru.practicum.huuudrich.model.event.UpdateEventAdminRequest;
+import ru.practicum.huuudrich.model.compilations.*;
+import ru.practicum.huuudrich.model.event.*;
 import ru.practicum.huuudrich.model.user.UserDto;
 import ru.practicum.huuudrich.service.admin.AdminService;
 
@@ -30,13 +24,10 @@ import java.util.List;
 @RequestMapping("/admin")
 @Validated
 public class AdminController {
-    private final static String USER_PATH = "/users";
-    private final static String CATEGORY_PATH = "/categories";
-    private final static String CATEGORY_ID = "/categories/{catId}";
-    private final static String EVENT_PATH = "/events";
-    private final static String COMPILATION_PATH = "/compilations";
-
-    private final static String COMPILATION_ID = "/compilations/{compId}";
+    private static final String USER_PATH = "/users";
+    private static final String CATEGORY_PATH = "/categories";
+    private static final String EVENT_PATH = "/events";
+    private static final String COMPILATION_PATH = "/compilations";
     private final AdminService adminService;
 
     @GetMapping(USER_PATH)
@@ -54,7 +45,7 @@ public class AdminController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
-    @DeleteMapping(USER_PATH + "{userId}")
+    @DeleteMapping(USER_PATH + "/{userId}")
     public ResponseEntity<Void> deleteUser(@Positive @PathVariable Long userId) {
         adminService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -66,13 +57,13 @@ public class AdminController {
         return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
     }
 
-    @DeleteMapping(CATEGORY_ID)
+    @DeleteMapping(CATEGORY_PATH + "/{catId}")
     public ResponseEntity<Void> deleteCategory(@Positive @PathVariable Long catId) {
         adminService.deleteCategory(catId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping(CATEGORY_ID)
+    @PatchMapping(CATEGORY_PATH + "/{catId}")
     public ResponseEntity<CategoryDto> updateCategory(@Positive @PathVariable Long catId,
                                                       @Valid @RequestBody CategoryDto categoryDto) {
         CategoryDto updateCategory = adminService.updateCategory(catId, categoryDto);
@@ -105,13 +96,13 @@ public class AdminController {
         return new ResponseEntity<>(createdCompilation, HttpStatus.CREATED);
     }
 
-    @DeleteMapping(COMPILATION_ID)
+    @DeleteMapping(COMPILATION_PATH + "/{compId}")
     public ResponseEntity<Void> deleteCompilation(@PathVariable @Positive Long compId) {
         adminService.deleteCompilation(compId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping(COMPILATION_ID)
+    @PatchMapping(COMPILATION_PATH + "/{compId}")
     public ResponseEntity<CompilationDto> updateCompilation(@PathVariable @Positive Long compId,
                                                             @RequestBody @Valid UpdateCompilationRequest updateCompilation) {
         CompilationDto compilationDto = adminService.updateCompilation(compId, updateCompilation);

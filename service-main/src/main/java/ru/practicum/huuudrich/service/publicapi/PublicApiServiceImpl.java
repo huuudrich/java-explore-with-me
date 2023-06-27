@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.huuudrich.client.ClientRequest;
+import ru.practicum.exception.BadRequestException;
 import ru.practicum.huuudrich.client.StatsClient;
 import ru.practicum.huuudrich.mapper.CategoryMapper;
 import ru.practicum.huuudrich.mapper.CompilationMapper;
@@ -18,7 +18,7 @@ import ru.practicum.huuudrich.model.event.*;
 import ru.practicum.huuudrich.repository.CategoryRepository;
 import ru.practicum.huuudrich.repository.CompilationRepository;
 import ru.practicum.huuudrich.repository.EventRepository;
-import ru.practicum.huuudrich.utils.exception.BadRequestException;
+import ru.practicum.model.ClientRequest;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
@@ -114,14 +114,12 @@ public class PublicApiServiceImpl implements PublicApiService {
         }
 
         List<Event> events = eventRepository.findAll(whereClause, pageable).getContent();
-
         ClientRequest clientRequest = createClientRequest(request);
+        log.info(statsClient.saveRequest(clientRequest).toString());
 
-        if (!statsClient.checkIp(request.getRemoteAddr())) {
+        if (!statsClient.checkIp(clientRequest.getIp(), clientRequest.getUri())) {
             eventRepository.incrementViewsList(events);
         }
-
-        log.info(statsClient.saveRequest(clientRequest).toString());
 
         return EventMapper.INSTANCE.toShortDtoList(events);
     }
@@ -136,7 +134,8 @@ public class PublicApiServiceImpl implements PublicApiService {
         }
         ClientRequest clientRequest = createClientRequest(request);
 
-        if (!statsClient.checkIp(request.getRemoteAddr())) {
+
+        if (!statsClient.checkIp(clientRequest.getIp(), clientRequest.getUri())) {
             eventRepository.incrementViews(eventId);
         }
 
@@ -153,5 +152,4 @@ public class PublicApiServiceImpl implements PublicApiService {
         clientRequest.setUri(request.getRequestURI());
         return clientRequest;
     }
-
 }

@@ -1,25 +1,20 @@
-package ru.practicum.huuudrich.model.error;
+package ru.practicum.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ApiError {
-    @JsonIgnore
-    List<String> errors;
-    String message;
-    String reason;
-    String status;
+public class ClientRequest {
+    String app;
+    String uri;
+    String ip;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime timestamp;
 }

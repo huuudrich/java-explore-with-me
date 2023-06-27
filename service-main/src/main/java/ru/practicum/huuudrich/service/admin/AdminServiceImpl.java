@@ -74,11 +74,10 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public CategoryDto addCategory(CategoryDto categoryDto) {
         log.info(String.format("Add category with name: %s", categoryDto.getName()));
-        Category category = CategoryMapper.INSTANCE.toEntity(categoryDto);
-        categoryRepository.save(category);
-        return CategoryMapper.INSTANCE.toDto(category);
+        Category category = CategoryMapper.INSTANCE.toCategory(categoryDto);
+        return CategoryMapper.INSTANCE.toDto(categoryRepository.save(category));
     }
-    @Transactional
+
     @Override
     public void deleteCategory(Long categoryId) {
         categoryRepository.deleteById(categoryId);
@@ -88,7 +87,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto) {
         categoryDto.setId(categoryId);
-        Category category = CategoryMapper.INSTANCE.toEntity(categoryDto);
+        Category category = CategoryMapper.INSTANCE.toCategory(categoryDto);
         categoryRepository.save(category);
         return CategoryMapper.INSTANCE.toDto(category);
     }
@@ -168,7 +167,7 @@ public class AdminServiceImpl implements AdminService {
         compilationDto.setEvents(EventMapper.INSTANCE.toShortDtoList(events));
         return compilationDto;
     }
-    @Transactional
+
     @Override
     public void deleteCompilation(Long compId) {
         log.info(String.format("Delete compilation with id: %s", compId));
